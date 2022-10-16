@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  francis-nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8976:80"
+
+    restart: unless-stopped
+    volumes:
+      - ./src:/var/www/html
+
+  database:
+    image: mariadb
+    restart: always
+    volumes:
+      - ./database/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    environment:
+      MYSQL_DATABASE: php_db
+      MYSQL_ROOT_PASSWORD: password
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "1333:8080"
+
+volumes:
+  data:
